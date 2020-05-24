@@ -1,23 +1,57 @@
-import React from 'react';
-import {View,StyleSheet,Text,Button} from 'react-native';
+import React, { useState,useContext } from "react";
+import { View, StyleSheet } from "react-native";
+import { Text, Input, Button } from "react-native-elements";
+import Spacer from "../components/Spacer";
+import {Context as AuthContext} from '../context/authContext'
 
-const SignupScreen =({navigation})=>{
-    return(
-        <View>
-            <Text style={styles.textStyle}>
-               Signup Screen
-            </Text>
-            <Button title="Go to signin"  onPress={()=>navigation.navigate('Signin')}/>
-            <Button title="Go to main flow"  onPress={()=>navigation.navigate('mainFlow')}/>
-        </View>
-    )
-}
+const SignupScreen = ({ navigation }) => {
 
-const styles=StyleSheet.create({
-    textStyle:{
-        fontSize:48,
-        alignContent:'center'
-    }
+  const {state,signup}=useContext(AuthContext);  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  return (
+    <View style={styles.container}>
+      <Spacer>
+        <Text h3>Sign Up for Tracker</Text>
+      </Spacer>
+      <Spacer />
+      <Input
+        label="Email"
+        value={email}
+        onChangeText={(newEmail) => setEmail(newEmail)}
+        autoCapitalize="none"
+        autoCorrect={false}
+        keyboardType="email-address"
+      />
+      <Spacer />
+      <Input
+        secureTextEntry
+        label="Password"
+        value={password}
+        onChangeText={(newPassword) => setPassword(newPassword)}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      <Spacer>
+        <Button title="signup" onPress={()=>signup({email,password})}/>
+      </Spacer>
+    </View>
+  );
+};
+
+SignupScreen.navigationOptions = () => {
+  return {
+    headerShown: false,
+  };
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    marginBottom: 200,
+  },
 });
 
 export default SignupScreen;
