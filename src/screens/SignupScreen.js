@@ -1,46 +1,34 @@
-import React, { useState,useContext } from "react";
-import { View, StyleSheet } from "react-native";
-import { Text, Input, Button } from "react-native-elements";
-import Spacer from "../components/Spacer";
-import {Context as AuthContext} from '../context/authContext'
+import React, { useState, useContext, } from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, Input, Button, Divider } from "react-native-elements";
+import AuthForm from "../components/AuthForm";
+import { Context as AuthContext } from "../context/authContext";
+import NavLink from "../components/NavLink";
+import {NavigationEvents} from 'react-navigation'
+import {SafeAreaView} from 'react-navigation';
+
 
 const SignupScreen = ({ navigation }) => {
-
-  const {state,signup}=useContext(AuthContext);  
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  console.log(state);
+  const { state, signup ,clearErrorMessage} = useContext(AuthContext);
   
-
   return (
-    <View style={styles.container}>
-      <Spacer>
-        <Text h3>Sign Up for Tracker</Text>
-      </Spacer>
-      <Spacer />
-      <Input
-        label="Email"
-        value={email}
-        onChangeText={(newEmail) => setEmail(newEmail)}
-        autoCapitalize="none"
-        autoCorrect={false}
-        keyboardType="email-address"
+    
+      <View style={styles.container}>
+            <NavigationEvents  
+            onWillFocus={()=>{clearErrorMessage}}
+            />
+      <AuthForm
+        headerText="Sign Up for Tracker"
+        errorMessage={state.errorMessage}
+        submitButtonText="Sign up"
+        onSubmit={({ email, password }) => signup({ email, password })}
       />
-      <Spacer />
-      <Input
-        secureTextEntry
-        label="Password"
-        value={password}
-        onChangeText={(newPassword) => setPassword(newPassword)}
-        autoCapitalize="none"
-        autoCorrect={false}
+      <NavLink
+        routeName="Signin"
+        text="Already have an account? Sign in instead"
       />
-      {state.errorMessage?<Text style={styles.errorMessage}>{state.errorMessage}</Text>:null}
-      <Spacer>
-        <Button title="signup" onPress={()=>signup({email,password})}/>
-      </Spacer>
     </View>
+    
   );
 };
 
@@ -56,12 +44,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 200,
   },
-  errorMessage:{
-      fontSize:16,
-      color:'red',
-      marginLeft:15,
-      marginTop:15
-  }
+  errorMessage: {
+    fontSize: 16,
+    color: "red",
+    marginLeft: 15,
+    marginTop: 15,
+  },
+  link: {
+    color: "blue",
+    marginLeft: 10,
+    fontSize: 20,
+    marginTop: 20,
+  },
 });
 
 export default SignupScreen;
