@@ -1,20 +1,40 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import {View,StyleSheet,Text} from 'react-native';
+import {Context as TrackContext} from '../context/TrackContext'
+import MapView,{Polyline} from 'react-native-maps'
 
-const TrackDetailScreen =()=>{
-    return(
-        <View>
+const TrackDetailScreen =({navigation})=>{
+
+    const _id=navigation.getParam('_id');
+    const {state}=useContext(TrackContext);
+    const track=state.find(t=>t._id===_id);
+    const initialCoords=track.locations[0].coords;
+
+    return(<>
             <Text style={styles.textStyle}>
-                TrackDetail Screen
+                {track.name}
             </Text>
-        </View>
-    )
+            <MapView style={styles.map}
+            initialRegion={{
+                longitudeDelta:0.01,
+                latitudeDelta:0.01,
+                ...initialCoords
+            }}
+            >
+                <Polyline coordinates={track.locations.map(loc=>loc.coords)} />
+            </MapView>
+        </>)
+    
 }
+
 
 const styles=StyleSheet.create({
     textStyle:{
         fontSize:48,
         alignContent:'center'
+    },
+    map:{
+        height:300
     }
 });
 
